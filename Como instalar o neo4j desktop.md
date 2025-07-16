@@ -33,7 +33,7 @@ Este guia irá ajudá-lo a baixar, instalar e configurar o **Neo4j Desktop** par
 3. Aguarde até o status mostrar `Running`
 4. A partir dai você ja pode fazer consultas e popular seu BD. Para iso clique em **"Query"** e ao lado de "**neo4j$**"
 digite o que você deseja
-
+5. Popule o banco copiando o conteúdo do arquivo população_neo.txt que se encontra nesse repositório também
 ---
 
 ## 🔗 4. Verificando a Porta de Conexão
