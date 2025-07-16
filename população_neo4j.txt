@@ -1,0 +1,283 @@
+// Limpar base de dados existente
+MATCH (n) DETACH DELETE n;
+
+// ===== CRIAÇÃO DE AUTORES =====
+CREATE (a1:Autor {nome: "J.K. Rowling", nacionalidade: "Britânica", nascimento: 1965, biografia: "Autora britânica famosa pela série Harry Potter"})
+CREATE (a2:Autor {nome: "George Orwell", nacionalidade: "Britânica", nascimento: 1903, morte: 1950, biografia: "Escritor e jornalista britânico conhecido por suas obras distópicas"})
+CREATE (a3:Autor {nome: "J.R.R. Tolkien", nacionalidade: "Britânica", nascimento: 1892, morte: 1973, biografia: "Filólogo e autor de fantasia épica"})
+CREATE (a4:Autor {nome: "Agatha Christie", nacionalidade: "Britânica", nascimento: 1890, morte: 1976, biografia: "Rainha do crime, mestre do mistério"})
+CREATE (a5:Autor {nome: "Stephen King", nacionalidade: "Americana", nascimento: 1947, biografia: "Mestre do horror contemporâneo"})
+CREATE (a6:Autor {nome: "Isaac Asimov", nacionalidade: "Russa-Americana", nascimento: 1920, morte: 1992, biografia: "Bioquímico e escritor de ficção científica"})
+CREATE (a7:Autor {nome: "Ray Bradbury", nacionalidade: "Americana", nascimento: 1920, morte: 2012, biografia: "Escritor de ficção científica e fantasia"})
+CREATE (a8:Autor {nome: "Neil Gaiman", nacionalidade: "Britânica", nascimento: 1960, biografia: "Autor de fantasia urbana e mitologia moderna"})
+CREATE (a9:Autor {nome: "Suzanne Collins", nacionalidade: "Americana", nascimento: 1962, biografia: "Autora de literatura jovem adulta"})
+CREATE (a10:Autor {nome: "Dan Brown", nacionalidade: "Americana", nascimento: 1964, biografia: "Escritor de thrillers e ficção histórica"})
+CREATE (a11:Autor {nome: "Margaret Atwood", nacionalidade: "Canadense", nascimento: 1939, biografia: "Poeta, romancista e crítica literária"})
+CREATE (a12:Autor {nome: "Paulo Coelho", nacionalidade: "Brasileira", nascimento: 1947, biografia: "Romancista e letrista brasileiro"})
+CREATE (a13:Autor {nome: "Gabriel García Márquez", nacionalidade: "Colombiana", nascimento: 1927, morte: 2014, biografia: "Escritor de realismo mágico, Nobel de Literatura"})
+CREATE (a14:Autor {nome: "Haruki Murakami", nacionalidade: "Japonesa", nascimento: 1949, biografia: "Escritor de ficção contemporânea surrealista"})
+CREATE (a15:Autor {nome: "Gillian Flynn", nacionalidade: "Americana", nascimento: 1971, biografia: "Escritora de thrillers psicológicos"})
+
+// ===== CRIAÇÃO DE GÊNEROS =====
+CREATE (g1:Genero {nome: "Fantasia", descricao: "Histórias com elementos mágicos e sobrenaturais"})
+CREATE (g2:Genero {nome: "Distopia", descricao: "Sociedades imaginárias indesejáveis ou assustadoras"})
+CREATE (g3:Genero {nome: "Mistério", descricao: "Histórias focadas em resolver crimes ou enigmas"})
+CREATE (g4:Genero {nome: "Terror", descricao: "Literatura destinada a assustar e criar suspense"})
+CREATE (g5:Genero {nome: "Ficção Científica", descricao: "Especulação sobre tecnologia e futuro"})
+CREATE (g6:Genero {nome: "Romance", descricao: "Histórias focadas em relacionamentos amorosos"})
+CREATE (g7:Genero {nome: "Thriller", descricao: "Narrativas de suspense e tensão"})
+CREATE (g8:Genero {nome: "Aventura", descricao: "Histórias de jornadas e descobertas"})
+CREATE (g9:Genero {nome: "Drama", descricao: "Narrativas focadas em conflitos emocionais"})
+CREATE (g10:Genero {nome: "Jovem Adulto", descricao: "Literatura direcionada a adolescentes e jovens"})
+CREATE (g11:Genero {nome: "Realismo Mágico", descricao: "Elementos fantásticos em contextos realistas"})
+CREATE (g12:Genero {nome: "Autoajuda", descricao: "Livros para desenvolvimento pessoal"})
+
+// ===== CRIAÇÃO DE EDITORAS =====
+CREATE (e1:Editora {nome: "Bloomsbury", pais: "Reino Unido", fundacao: 1986})
+CREATE (e2:Editora {nome: "Penguin Random House", pais: "Reino Unido", fundacao: 1935})
+CREATE (e3:Editora {nome: "HarperCollins", pais: "Estados Unidos", fundacao: 1989})
+CREATE (e4:Editora {nome: "Doubleday", pais: "Estados Unidos", fundacao: 1897})
+CREATE (e5:Editora {nome: "Scholastic", pais: "Estados Unidos", fundacao: 1920})
+CREATE (e6:Editora {nome: "Rocco", pais: "Brasil", fundacao: 1975})
+CREATE (e7:Editora {nome: "Companhia das Letras", pais: "Brasil", fundacao: 1986})
+
+// ===== CRIAÇÃO DE SÉRIES =====
+CREATE (s1:Serie {nome: "Harry Potter", total_livros: 7, status: "Completa"})
+CREATE (s2:Serie {nome: "O Senhor dos Anéis", total_livros: 3, status: "Completa"})
+CREATE (s3:Serie {nome: "Fundação", total_livros: 7, status: "Completa"})
+CREATE (s4:Serie {nome: "Jogos Vorazes", total_livros: 3, status: "Completa"})
+CREATE (s5:Serie {nome: "A Torre Negra", total_livros: 8, status: "Completa"})
+
+// ===== CRIAÇÃO DE LIVROS =====
+// Série Harry Potter
+CREATE (l1:Livro {titulo: "Harry Potter e a Pedra Filosofal", ano: 1997, paginas: 223, isbn: "9788532511010", preco: 29.90, idioma: "Português"})
+CREATE (l2:Livro {titulo: "Harry Potter e a Câmara Secreta", ano: 1998, paginas: 251, isbn: "9788532511027", preco: 32.90, idioma: "Português"})
+CREATE (l3:Livro {titulo: "Harry Potter e o Prisioneiro de Azkaban", ano: 1999, paginas: 317, isbn: "9788532511034", preco: 34.90, idioma: "Português"})
+CREATE (l4:Livro {titulo: "Harry Potter e o Cálice de Fogo", ano: 2000, paginas: 582, isbn: "9788532511041", preco: 39.90, idioma: "Português"})
+
+// George Orwell
+CREATE (l5:Livro {titulo: "1984", ano: 1949, paginas: 416, isbn: "9788535914849", preco: 24.90, idioma: "Português"})
+CREATE (l6:Livro {titulo: "A Revolução dos Bichos", ano: 1945, paginas: 112, isbn: "9788535914856", preco: 19.90, idioma: "Português"})
+
+// Tolkien
+CREATE (l7:Livro {titulo: "O Senhor dos Anéis: A Sociedade do Anel", ano: 1954, paginas: 576, isbn: "9788533613379", preco: 42.90, idioma: "Português"})
+CREATE (l8:Livro {titulo: "O Senhor dos Anéis: As Duas Torres", ano: 1954, paginas: 352, isbn: "9788533613386", preco: 42.90, idioma: "Português"})
+CREATE (l9:Livro {titulo: "O Senhor dos Anéis: O Retorno do Rei", ano: 1955, paginas: 624, isbn: "9788533613393", preco: 42.90, idioma: "Português"})
+CREATE (l10:Livro {titulo: "O Hobbit", ano: 1937, paginas: 336, isbn: "9788533613348", preco: 34.90, idioma: "Português"})
+
+// Agatha Christie
+CREATE (l11:Livro {titulo: "Assassinato no Expresso do Oriente", ano: 1934, paginas: 256, isbn: "9788525052476", preco: 27.90, idioma: "Português"})
+CREATE (l12:Livro {titulo: "E Não Sobrou Nenhum", ano: 1939, paginas: 264, isbn: "9788525052483", preco: 27.90, idioma: "Português"})
+CREATE (l13:Livro {titulo: "Morte no Nilo", ano: 1937, paginas: 288, isbn: "9788525052490", preco: 29.90, idioma: "Português"})
+
+// Stephen King
+CREATE (l14:Livro {titulo: "O Iluminado", ano: 1977, paginas: 512, isbn: "9788581050329", preco: 39.90, idioma: "Português"})
+CREATE (l15:Livro {titulo: "It: A Coisa", ano: 1986, paginas: 1138, isbn: "9788581050336", preco: 54.90, idioma: "Português"})
+CREATE (l16:Livro {titulo: "Carrie", ano: 1974, paginas: 272, isbn: "9788581050343", preco: 32.90, idioma: "Português"})
+
+// Isaac Asimov
+CREATE (l17:Livro {titulo: "Fundação", ano: 1951, paginas: 244, isbn: "9788576573371", preco: 29.90, idioma: "Português"})
+CREATE (l18:Livro {titulo: "Eu, Robô", ano: 1950, paginas: 253, isbn: "9788576573388", preco: 29.90, idioma: "Português"})
+
+// Outros livros
+CREATE (l19:Livro {titulo: "Fahrenheit 451", ano: 1953, paginas: 216, isbn: "9788525052506", preco: 24.90, idioma: "Português"})
+CREATE (l20:Livro {titulo: "Sandman: Prelúdios e Noturnos", ano: 1989, paginas: 240, isbn: "9788565765015", preco: 34.90, idioma: "Português"})
+CREATE (l21:Livro {titulo: "Jogos Vorazes", ano: 2008, paginas: 400, isbn: "9788579800245", preco: 34.90, idioma: "Português"})
+CREATE (l22:Livro {titulo: "O Código Da Vinci", ano: 2003, paginas: 432, isbn: "9788575421000", preco: 36.90, idioma: "Português"})
+CREATE (l23:Livro {titulo: "O Conto da Aia", ano: 1985, paginas: 368, isbn: "9788535914900", preco: 34.90, idioma: "Português"})
+CREATE (l24:Livro {titulo: "O Alquimista", ano: 1988, paginas: 160, isbn: "9788576573395", preco: 24.90, idioma: "Português"})
+CREATE (l25:Livro {titulo: "Cem Anos de Solidão", ano: 1967, paginas: 432, isbn: "9788535914917", preco: 39.90, idioma: "Português"})
+CREATE (l26:Livro {titulo: "Kafka à Beira-Mar", ano: 2002, paginas: 656, isbn: "9788535914924", preco: 44.90, idioma: "Português"})
+CREATE (l27:Livro {titulo: "Garota Exemplar", ano: 2012, paginas: 432, isbn: "9788575421017", preco: 36.90, idioma: "Português"})
+
+// ===== RELACIONAMENTOS AUTOR-LIVRO =====
+CREATE (l1)-[:ESCRITO_POR]->(a1)
+CREATE (l2)-[:ESCRITO_POR]->(a1)
+CREATE (l3)-[:ESCRITO_POR]->(a1)
+CREATE (l4)-[:ESCRITO_POR]->(a1)
+CREATE (l5)-[:ESCRITO_POR]->(a2)
+CREATE (l6)-[:ESCRITO_POR]->(a2)
+CREATE (l7)-[:ESCRITO_POR]->(a3)
+CREATE (l8)-[:ESCRITO_POR]->(a3)
+CREATE (l9)-[:ESCRITO_POR]->(a3)
+CREATE (l10)-[:ESCRITO_POR]->(a3)
+CREATE (l11)-[:ESCRITO_POR]->(a4)
+CREATE (l12)-[:ESCRITO_POR]->(a4)
+CREATE (l13)-[:ESCRITO_POR]->(a4)
+CREATE (l14)-[:ESCRITO_POR]->(a5)
+CREATE (l15)-[:ESCRITO_POR]->(a5)
+CREATE (l16)-[:ESCRITO_POR]->(a5)
+CREATE (l17)-[:ESCRITO_POR]->(a6)
+CREATE (l18)-[:ESCRITO_POR]->(a6)
+CREATE (l19)-[:ESCRITO_POR]->(a7)
+CREATE (l20)-[:ESCRITO_POR]->(a8)
+CREATE (l21)-[:ESCRITO_POR]->(a9)
+CREATE (l22)-[:ESCRITO_POR]->(a10)
+CREATE (l23)-[:ESCRITO_POR]->(a11)
+CREATE (l24)-[:ESCRITO_POR]->(a12)
+CREATE (l25)-[:ESCRITO_POR]->(a13)
+CREATE (l26)-[:ESCRITO_POR]->(a14)
+CREATE (l27)-[:ESCRITO_POR]->(a15)
+
+// ===== RELACIONAMENTOS LIVRO-GÊNERO =====
+CREATE (l1)-[:TEM_GENERO]->(g1)
+CREATE (l1)-[:TEM_GENERO]->(g8)
+CREATE (l1)-[:TEM_GENERO]->(g10)
+CREATE (l2)-[:TEM_GENERO]->(g1)
+CREATE (l2)-[:TEM_GENERO]->(g8)
+CREATE (l2)-[:TEM_GENERO]->(g10)
+CREATE (l3)-[:TEM_GENERO]->(g1)
+CREATE (l3)-[:TEM_GENERO]->(g8)
+CREATE (l3)-[:TEM_GENERO]->(g10)
+CREATE (l4)-[:TEM_GENERO]->(g1)
+CREATE (l4)-[:TEM_GENERO]->(g8)
+CREATE (l4)-[:TEM_GENERO]->(g10)
+CREATE (l5)-[:TEM_GENERO]->(g2)
+CREATE (l5)-[:TEM_GENERO]->(g5)
+CREATE (l6)-[:TEM_GENERO]->(g2)
+CREATE (l6)-[:TEM_GENERO]->(g1)
+CREATE (l7)-[:TEM_GENERO]->(g1)
+CREATE (l7)-[:TEM_GENERO]->(g8)
+CREATE (l8)-[:TEM_GENERO]->(g1)
+CREATE (l8)-[:TEM_GENERO]->(g8)
+CREATE (l9)-[:TEM_GENERO]->(g1)
+CREATE (l9)-[:TEM_GENERO]->(g8)
+CREATE (l10)-[:TEM_GENERO]->(g1)
+CREATE (l10)-[:TEM_GENERO]->(g8)
+CREATE (l11)-[:TEM_GENERO]->(g3)
+CREATE (l11)-[:TEM_GENERO]->(g7)
+CREATE (l12)-[:TEM_GENERO]->(g3)
+CREATE (l12)-[:TEM_GENERO]->(g7)
+CREATE (l13)-[:TEM_GENERO]->(g3)
+CREATE (l13)-[:TEM_GENERO]->(g7)
+CREATE (l14)-[:TEM_GENERO]->(g4)
+CREATE (l14)-[:TEM_GENERO]->(g7)
+CREATE (l15)-[:TEM_GENERO]->(g4)
+CREATE (l15)-[:TEM_GENERO]->(g7)
+CREATE (l16)-[:TEM_GENERO]->(g4)
+CREATE (l16)-[:TEM_GENERO]->(g7)
+CREATE (l17)-[:TEM_GENERO]->(g5)
+CREATE (l18)-[:TEM_GENERO]->(g5)
+CREATE (l19)-[:TEM_GENERO]->(g5)
+CREATE (l19)-[:TEM_GENERO]->(g2)
+CREATE (l20)-[:TEM_GENERO]->(g1)
+CREATE (l20)-[:TEM_GENERO]->(g4)
+CREATE (l21)-[:TEM_GENERO]->(g2)
+CREATE (l21)-[:TEM_GENERO]->(g10)
+CREATE (l21)-[:TEM_GENERO]->(g7)
+CREATE (l22)-[:TEM_GENERO]->(g7)
+CREATE (l22)-[:TEM_GENERO]->(g3)
+CREATE (l23)-[:TEM_GENERO]->(g2)
+CREATE (l23)-[:TEM_GENERO]->(g5)
+CREATE (l24)-[:TEM_GENERO]->(g12)
+CREATE (l24)-[:TEM_GENERO]->(g1)
+CREATE (l25)-[:TEM_GENERO]->(g11)
+CREATE (l25)-[:TEM_GENERO]->(g9)
+CREATE (l26)-[:TEM_GENERO]->(g11)
+CREATE (l26)-[:TEM_GENERO]->(g9)
+CREATE (l27)-[:TEM_GENERO]->(g7)
+CREATE (l27)-[:TEM_GENERO]->(g3)
+
+// ===== RELACIONAMENTOS LIVRO-EDITORA =====
+CREATE (l1)-[:PUBLICADO_POR]->(e6)
+CREATE (l2)-[:PUBLICADO_POR]->(e6)
+CREATE (l3)-[:PUBLICADO_POR]->(e6)
+CREATE (l4)-[:PUBLICADO_POR]->(e6)
+CREATE (l5)-[:PUBLICADO_POR]->(e7)
+CREATE (l6)-[:PUBLICADO_POR]->(e7)
+CREATE (l7)-[:PUBLICADO_POR]->(e3)
+CREATE (l8)-[:PUBLICADO_POR]->(e3)
+CREATE (l9)-[:PUBLICADO_POR]->(e3)
+CREATE (l10)-[:PUBLICADO_POR]->(e3)
+CREATE (l11)-[:PUBLICADO_POR]->(e2)
+CREATE (l12)-[:PUBLICADO_POR]->(e2)
+CREATE (l13)-[:PUBLICADO_POR]->(e2)
+CREATE (l14)-[:PUBLICADO_POR]->(e4)
+CREATE (l15)-[:PUBLICADO_POR]->(e4)
+CREATE (l16)-[:PUBLICADO_POR]->(e4)
+CREATE (l17)-[:PUBLICADO_POR]->(e1)
+CREATE (l18)-[:PUBLICADO_POR]->(e1)
+CREATE (l19)-[:PUBLICADO_POR]->(e2)
+CREATE (l20)-[:PUBLICADO_POR]->(e2)
+CREATE (l21)-[:PUBLICADO_POR]->(e5)
+CREATE (l22)-[:PUBLICADO_POR]->(e6)
+CREATE (l23)-[:PUBLICADO_POR]->(e7)
+CREATE (l24)-[:PUBLICADO_POR]->(e6)
+CREATE (l25)-[:PUBLICADO_POR]->(e7)
+CREATE (l26)-[:PUBLICADO_POR]->(e7)
+CREATE (l27)-[:PUBLICADO_POR]->(e7)
+
+// ===== RELACIONAMENTOS LIVRO-SÉRIE =====
+CREATE (l1)-[:PERTENCE_A_SERIE]->(s1)
+CREATE (l2)-[:PERTENCE_A_SERIE]->(s1)
+CREATE (l3)-[:PERTENCE_A_SERIE]->(s1)
+CREATE (l4)-[:PERTENCE_A_SERIE]->(s1)
+CREATE (l7)-[:PERTENCE_A_SERIE]->(s2)
+CREATE (l8)-[:PERTENCE_A_SERIE]->(s2)
+CREATE (l9)-[:PERTENCE_A_SERIE]->(s2)
+CREATE (l17)-[:PERTENCE_A_SERIE]->(s3)
+CREATE (l21)-[:PERTENCE_A_SERIE]->(s4)
+
+// ===== RELACIONAMENTOS DE INFLUÊNCIA ENTRE AUTORES =====
+CREATE (a1)-[:INFLUENCIADO_POR]->(a3)
+CREATE (a8)-[:INFLUENCIADO_POR]->(a3)
+CREATE (a5)-[:INFLUENCIADO_POR]->(a7)
+CREATE (a9)-[:INFLUENCIADO_POR]->(a2)
+CREATE (a14)-[:INFLUENCIADO_POR]->(a7)
+
+// ===== RELACIONAMENTOS DE COLABORAÇÃO =====
+CREATE (a8)-[:COLABOROU_COM]->(a5)
+
+// ===== RELACIONAMENTOS DE RECOMENDAÇÃO =====
+CREATE (l1)-[:RECOMENDA]->(l10)
+CREATE (l5)-[:RECOMENDA]->(l23)
+CREATE (l11)-[:RECOMENDA]->(l12)
+CREATE (l14)-[:RECOMENDA]->(l15)
+CREATE (l17)-[:RECOMENDA]->(l18)
+
+// ===== RELACIONAMENTOS DE SEQUÊNCIA =====
+CREATE (l1)-[:SEGUIDO_POR]->(l2)
+CREATE (l2)-[:SEGUIDO_POR]->(l3)
+CREATE (l3)-[:SEGUIDO_POR]->(l4)
+CREATE (l7)-[:SEGUIDO_POR]->(l8)
+CREATE (l8)-[:SEGUIDO_POR]->(l9)
+
+// ===== CRIAÇÃO DE PRÊMIOS =====
+CREATE (p1:Premio {nome: "Hugo Award", categoria: "Ficção Científica", ano: 1953})
+CREATE (p2:Premio {nome: "Nebula Award", categoria: "Ficção Científica", ano: 1965})
+CREATE (p3:Premio {nome: "World Fantasy Award", categoria: "Fantasia", ano: 1975})
+CREATE (p4:Premio {nome: "British Book Awards", categoria: "Geral", ano: 1990})
+CREATE (p5:Premio {nome: "Nobel de Literatura", categoria: "Literatura", ano: 1901})
+
+// ===== RELACIONAMENTOS LIVRO-PRÊMIO =====
+CREATE (l17)-[:GANHOU_PREMIO]->(p1)
+CREATE (l17)-[:GANHOU_PREMIO]->(p2)
+CREATE (l25)-[:GANHOU_PREMIO]->(p5)
+CREATE (l1)-[:GANHOU_PREMIO]->(p4)
+CREATE (l20)-[:GANHOU_PREMIO]->(p3)
+
+// ===== RELACIONAMENTOS AUTOR-PRÊMIO =====
+CREATE (a6)-[:GANHOU_PREMIO]->(p1)
+CREATE (a6)-[:GANHOU_PREMIO]->(p2)
+CREATE (a13)-[:GANHOU_PREMIO]->(p5)
+CREATE (a1)-[:GANHOU_PREMIO]->(p4)
+CREATE (a8)-[:GANHOU_PREMIO]->(p3)
+
+// ===== CONSULTAS ÚTEIS COMO COMENTÁRIOS =====
+// Para buscar todos os livros de um autor:
+// MATCH (a:Autor {nome: "J.K. Rowling"})<-[:ESCRITO_POR]-(l:Livro) RETURN l.titulo, l.ano
+
+// Para buscar livros por gênero:
+// MATCH (g:Genero {nome: "Fantasia"})<-[:TEM_GENERO]-(l:Livro) RETURN l.titulo, l.ano
+
+// Para buscar autores que ganharam prêmios:
+// MATCH (a:Autor)-[:GANHOU_PREMIO]->(p:Premio) RETURN a.nome, p.nome
+
+// Para buscar séries e seus livros:
+// MATCH (s:Serie)<-[:PERTENCE_A_SERIE]-(l:Livro) RETURN s.nome, l.titulo ORDER BY l.ano
+
+// Para buscar livros publicados por uma editora:
+// MATCH (e:Editora {nome: "Rocco"})<-[:PUBLICADO_POR]-(l:Livro) RETURN l.titulo, l.ano
+
+// Para buscar recomendações de livros:
+// MATCH (l1:Livro {titulo: "Harry Potter e a Pedra Filosofal"})-[:RECOMENDA]->(l2:Livro) RETURN l2.titulo
