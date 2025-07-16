@@ -107,8 +107,6 @@ def execute_cypher_query():
     try:
         with driver.session() as session:
             result = session.run(query, params)
-            # Para consultas de leitura (MATCH/RETURN), retorna os dados
-            # Para consultas de escrita (CREATE/SET/DELETE), retorna metadados
             records = []
             try:
                 for record in result:
@@ -131,7 +129,7 @@ def execute_cypher_query():
     except Exception as e:
         return jsonify({"error": f"Erro ao executar consulta Cypher: {str(e)}"}), 500
 
-# Funções auxiliares para contagem de nós
+# Funções auxiliares para contagem de nós (ainda no backend, mas não chamadas pelo frontend atual)
 def get_node_count(label):
     if not driver: return 0
     try:
@@ -142,27 +140,22 @@ def get_node_count(label):
         print(f"Erro ao contar nós {label}: {e}")
         return 0
 
-# NOVO ENDPOINT: Total de Autores
 @app.route('/api/stats/total_authors', methods=['GET'])
 def total_authors():
     return jsonify({"count": get_node_count("Autor")})
 
-# NOVO ENDPOINT: Total de Livros
 @app.route('/api/stats/total_books', methods=['GET'])
 def total_books():
     return jsonify({"count": get_node_count("Livro")})
 
-# NOVO ENDPOINT: Total de Gêneros
 @app.route('/api/stats/total_genres', methods=['GET'])
 def total_genres():
     return jsonify({"count": get_node_count("Genero")})
 
-# NOVO ENDPOINT: Total de Editoras (assumindo que Editora pode não existir)
 @app.route('/api/stats/total_publishers', methods=['GET'])
 def total_publishers():
     return jsonify({"count": get_node_count("Editora")})
 
-# NOVO ENDPOINT: Autores Mais Produtivos
 @app.route('/api/stats/most_productive_authors', methods=['GET'])
 def most_productive_authors():
     if not driver: return jsonify([])
@@ -180,7 +173,6 @@ def most_productive_authors():
         print(f"Erro ao buscar autores mais produtivos: {e}")
         return jsonify({"error": f"Erro ao buscar autores mais produtivos: {str(e)}"}), 500
 
-# NOVO ENDPOINT: Gêneros Mais Populares
 @app.route('/api/stats/most_popular_genres', methods=['GET'])
 def most_popular_genres():
     if not driver: return jsonify([])
@@ -223,6 +215,86 @@ def test_connection_endpoint():
             return jsonify({"status": "disconnected", "message": f"Erro na conexão com Neo4j: {str(e)}"}), 500
     else:
         return jsonify({"status": "disconnected", "message": "Driver Neo4j não inicializado."}), 500
+
+# NOVO ENDPOINT: Adicionar Livro
+@app.route('/api/add_book', methods=['POST'])
+def add_book():
+    if not driver:
+        return jsonify({"error": "Banco de dados não conectado."}), 500
+
+    data = request.get_json()
+    title = data.get('title')
+    author_name = data.get('author')
+    genres_str = data.get('genres', '') # String separada por vírgulas
+    publisher_name = data.get('publisher')
+    year = data.get('year')
+    pages = data.get('pages')
+
+    # Validação básica
+    if not all([title, author_name, genres_str]):
+        return jsonify({"error": "Título, autor e pelo menos um gênero são obrigatórios."}), 400
+
+    genres = [g.strip() for g in genres_str.split(',') if g.strip()] # Divide e limpa a string de gêneros
+
+    try:
+        with driver.session() as session:
+            # MERGE Author
+            session.run("MERGE (a:Autor {nome: $author_name})", {"author_name": author_name})
+
+            # MERGE Publisher (if provided)
+            if publisher_name:
+                session.run("MERGE (p:Editora {nome: $publisher_name})", {"publisher_name": publisher_name})
+
+            # MERGE Book with properties. ON CREATE SET ensures properties are set only on creation.
+            # If the book already exists, it will just match it.
+            book_props = {"titulo": title}
+            if year:
+                try:
+                    book_props["ano"] = int(year)
+                except ValueError:
+                    return jsonify({"error": "Ano deve ser um número válido."}), 400
+            if pages:
+                try:
+                    book_props["paginas"] = int(pages)
+                except ValueError:
+                    return jsonify({"error": "Páginas deve ser um número válido."}), 400
+
+            # Use MERGE for the book to avoid creating duplicates if the title is already there
+            # ON CREATE SET will set properties only if the node is newly created.
+            session.run("""
+                MERGE (l:Livro {titulo: $title})
+                ON CREATE SET l += $properties
+            """, {"title": title, "properties": book_props})
+
+            # Create relationships
+            # Book -> Author
+            session.run("""
+                MATCH (l:Livro {titulo: $title})
+                MATCH (a:Autor {nome: $author_name})
+                MERGE (l)-[:ESCRITO_POR]->(a)
+            """, {"title": title, "author_name": author_name})
+
+            # Book -> Genres
+            for genre_name in genres:
+                session.run("""
+                    MERGE (g:Genero {nome: $genre_name})
+                    WITH g
+                    MATCH (l:Livro {titulo: $title})
+                    MERGE (l)-[:TEM_GENERO]->(g)
+                """, {"genre_name": genre_name, "title": title})
+
+            # Book -> Publisher
+            if publisher_name:
+                session.run("""
+                    MATCH (l:Livro {titulo: $title})
+                    MATCH (p:Editora {nome: $publisher_name})
+                    MERGE (l)-[:PUBLICADO_POR]->(p)
+                """, {"title": title, "publisher_name": publisher_name})
+
+            return jsonify({"message": f"Livro '{title}' adicionado/atualizado com sucesso!"}), 201 # 201 Created
+    except Exception as e:
+        print(f"Erro ao adicionar livro: {e}")
+        return jsonify({"error": f"Erro interno do servidor ao adicionar livro: {str(e)}"}), 500
 
 if __name__ == '__main__':
     # Para desenvolvimento, use debug=True. Em produção, desative.
