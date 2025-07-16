@@ -1,3 +1,6 @@
+// Use esse arquivo para popular o seu bd no neo4j. 
+
+
 // Limpar base de dados existente
 MATCH (n) DETACH DELETE n;
 
