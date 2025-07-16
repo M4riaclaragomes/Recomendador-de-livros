@@ -259,22 +259,20 @@ def add_book():
                 except ValueError:
                     return jsonify({"error": "Páginas deve ser um número válido."}), 400
 
-            # Use MERGE for the book to avoid creating duplicates if the title is already there
-            # ON CREATE SET will set properties only if the node is newly created.
+          
             session.run("""
                 MERGE (l:Livro {titulo: $title})
                 ON CREATE SET l += $properties
             """, {"title": title, "properties": book_props})
 
-            # Create relationships
-            # Book -> Author
+        
             session.run("""
                 MATCH (l:Livro {titulo: $title})
                 MATCH (a:Autor {nome: $author_name})
                 MERGE (l)-[:ESCRITO_POR]->(a)
             """, {"title": title, "author_name": author_name})
 
-            # Book -> Genres
+         
             for genre_name in genres:
                 session.run("""
                     MERGE (g:Genero {nome: $genre_name})
@@ -283,7 +281,7 @@ def add_book():
                     MERGE (l)-[:TEM_GENERO]->(g)
                 """, {"genre_name": genre_name, "title": title})
 
-            # Book -> Publisher
+       
             if publisher_name:
                 session.run("""
                     MATCH (l:Livro {titulo: $title})
@@ -297,5 +295,5 @@ def add_book():
         return jsonify({"error": f"Erro interno do servidor ao adicionar livro: {str(e)}"}), 500
 
 if __name__ == '__main__':
-    # Para desenvolvimento, use debug=True. Em produção, desative.
+
     app.run(debug=True, port=5000)
