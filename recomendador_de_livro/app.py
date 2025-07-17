@@ -18,7 +18,7 @@ import atexit
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)  # Habilita CORS para todas as rotas da aplicação
+CORS(app) # Habilita CORS para todas as rotas da aplicação
 
 # Configurações do Neo4j
 NEO4J_URI = os.getenv("NEO4J_URI")
@@ -26,7 +26,7 @@ NEO4J_USERNAME = os.getenv("NEO4J_USERNAME")
 NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD")
 
 # Inicializa o driver do Neo4j
-driver = None  # Inicializa como None para garantir que esteja definido
+driver = None # Inicializa como None para garantir que esteja definido
 try:
     driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USERNAME, NEO4J_PASSWORD))
     # Testa a conexão imediatamente
@@ -46,7 +46,7 @@ def close_db():
 # Registra a função de limpeza para ser executada quando a aplicação for encerrada
 atexit.register(close_db)
 
-# Endpoint de recomendação de livros
+# Endpoint de recomendação de livros (CORRIGIDO com debug)
 @app.route('/api/recommendations', methods=['GET'])
 def get_recommendations():
     if not driver:
@@ -67,7 +67,7 @@ def get_recommendations():
             MATCH (l:Livro)-[:TEM_GENERO]->(g:Genero)
             WHERE toLower(g.nome) CONTAINS toLower($genre)
             WITH l, g
-            MATCH (a:Autor)-[:ESCRITO_POR]->(l)
+            MATCH (a:Autor)-[:ESCREVEU]->(l)
             WHERE toLower(a.nome) CONTAINS toLower($author)
             RETURN l.titulo AS title, a.nome AS author, g.nome AS genre, l.ano AS year, l.paginas AS pages
             LIMIT 10
@@ -79,7 +79,7 @@ def get_recommendations():
         query = """
             MATCH (l:Livro)-[:TEM_GENERO]->(g:Genero)
             WHERE toLower(g.nome) CONTAINS toLower($genre)
-            OPTIONAL MATCH (a:Autor)-[:ESCRITO_POR]->(l)
+            OPTIONAL MATCH (a:Autor)-[:ESCREVEU]->(l)
             RETURN l.titulo AS title, a.nome AS author, g.nome AS genre, l.ano AS year, l.paginas AS pages
             LIMIT 10
         """
@@ -112,7 +112,7 @@ def get_recommendations():
         print(f"Erro ao executar consulta Cypher: {e}")
         return jsonify({"error": "Erro interno do servidor ao buscar recomendações."}), 500
 
-# Endpoint para listar todos os dados para debug
+# NOVO ENDPOINT: Listar todos os dados para debug
 @app.route('/api/debug/all_data', methods=['GET'])
 def debug_all_data():
     if not driver:
@@ -123,7 +123,7 @@ def debug_all_data():
             # Busca todos os livros com seus relacionamentos
             query = """
             MATCH (l:Livro)
-            OPTIONAL MATCH (a:Autor)-[:ESCRITO_POR]->(l)
+            OPTIONAL MATCH (a:Autor)-[:ESCREVEU]->(l)
             OPTIONAL MATCH (l)-[:TEM_GENERO]->(g:Genero)
             OPTIONAL MATCH (l)-[:PUBLICADO_POR]->(p:Editora)
             RETURN l.titulo AS title, 
@@ -156,7 +156,7 @@ def debug_all_data():
         print(f"Erro ao buscar dados para debug: {e}")
         return jsonify({"error": f"Erro ao buscar dados: {str(e)}"}), 500
 
-# Endpoint para listar gêneros disponíveis
+# NOVO ENDPOINT: Listar gêneros disponíveis
 @app.route('/api/genres', methods=['GET'])
 def get_genres():
     if not driver:
@@ -177,7 +177,7 @@ def get_genres():
         print(f"Erro ao buscar gêneros: {e}")
         return jsonify({"error": f"Erro ao buscar gêneros: {str(e)}"}), 500
 
-# Endpoint para listar autores disponíveis
+# NOVO ENDPOINT: Listar autores disponíveis
 @app.route('/api/authors', methods=['GET'])
 def get_authors():
     if not driver:
@@ -198,7 +198,7 @@ def get_authors():
         print(f"Erro ao buscar autores: {e}")
         return jsonify({"error": f"Erro ao buscar autores: {str(e)}"}), 500
 
-# Endpoint para executar consulta Cypher arbitrária
+# NOVO ENDPOINT: Executar consulta Cypher arbitrária
 @app.route('/api/cypher', methods=['POST'])
 def execute_cypher_query():
     if not driver:
@@ -206,7 +206,7 @@ def execute_cypher_query():
     
     data = request.get_json()
     query = data.get('query')
-    params = data.get('params', {})  # Permite passar parâmetros para a consulta
+    params = data.get('params', {}) # Permite passar parâmetros para a consulta
 
     if not query:
         return jsonify({"error": "A consulta Cypher é obrigatória."}), 400
@@ -236,10 +236,9 @@ def execute_cypher_query():
     except Exception as e:
         return jsonify({"error": f"Erro ao executar consulta Cypher: {str(e)}"}), 500
 
-# Função auxiliar para contagem de nós
+# Funções auxiliares para contagem de nós (ainda no backend, mas não chamadas pelo frontend atual)
 def get_node_count(label):
-    if not driver: 
-        return 0
+    if not driver: return 0
     try:
         with driver.session() as session:
             result = session.run(f"MATCH (n:{label}) RETURN count(n) AS count")
@@ -248,35 +247,29 @@ def get_node_count(label):
         print(f"Erro ao contar nós {label}: {e}")
         return 0
 
-# Endpoint para contar total de autores
 @app.route('/api/stats/total_authors', methods=['GET'])
 def total_authors():
     return jsonify({"count": get_node_count("Autor")})
 
-# Endpoint para contar total de livros
 @app.route('/api/stats/total_books', methods=['GET'])
 def total_books():
     return jsonify({"count": get_node_count("Livro")})
 
-# Endpoint para contar total de gêneros
 @app.route('/api/stats/total_genres', methods=['GET'])
 def total_genres():
     return jsonify({"count": get_node_count("Genero")})
 
-# Endpoint para contar total de editoras
 @app.route('/api/stats/total_publishers', methods=['GET'])
 def total_publishers():
     return jsonify({"count": get_node_count("Editora")})
 
-# Endpoint para buscar autores mais produtivos
 @app.route('/api/stats/most_productive_authors', methods=['GET'])
 def most_productive_authors():
-    if not driver: 
-        return jsonify([])
+    if not driver: return jsonify([])
     try:
         with driver.session() as session:
             query = """
-            MATCH (a:Autor)-[:ESCRITO_POR]->(l:Livro)
+            MATCH (a:Autor)-[:ESCREVEU]->(l:Livro)
             RETURN a.nome AS author, count(l) AS bookCount
             ORDER BY bookCount DESC
             LIMIT 3
@@ -287,11 +280,9 @@ def most_productive_authors():
         print(f"Erro ao buscar autores mais produtivos: {e}")
         return jsonify({"error": f"Erro ao buscar autores mais produtivos: {str(e)}"}), 500
 
-# Endpoint para buscar gêneros mais populares
 @app.route('/api/stats/most_popular_genres', methods=['GET'])
 def most_popular_genres():
-    if not driver: 
-        return jsonify([])
+    if not driver: return jsonify([])
     try:
         with driver.session() as session:
             query = """
@@ -306,7 +297,7 @@ def most_popular_genres():
         print(f"Erro ao buscar gêneros mais populares: {e}")
         return jsonify({"error": f"Erro ao buscar gêneros mais populares: {str(e)}"}), 500
 
-# Endpoint para limpar banco de dados
+# NOVO ENDPOINT: Limpar Banco de Dados
 @app.route('/api/clear_database', methods=['POST'])
 def clear_database_endpoint():
     if not driver:
@@ -319,20 +310,20 @@ def clear_database_endpoint():
         print(f"Erro ao limpar o banco de dados: {e}")
         return jsonify({"error": f"Erro ao limpar o banco de dados: {str(e)}"}), 500
 
-# Endpoint para testar conexão
+# NOVO ENDPOINT: Testar Conexão
 @app.route('/api/test_connection', methods=['GET'])
 def test_connection_endpoint():
     if driver:
         try:
             with driver.session() as session:
-                session.run("RETURN 1")  # Consulta simples para verificar a conectividade
+                session.run("RETURN 1") # Consulta simples para verificar a conectividade
             return jsonify({"status": "connected", "message": "Conexão com Neo4j estabelecida."}), 200
         except Exception as e:
             return jsonify({"status": "disconnected", "message": f"Erro na conexão com Neo4j: {str(e)}"}), 500
     else:
         return jsonify({"status": "disconnected", "message": "Driver Neo4j não inicializado."}), 500
 
-# Endpoint para adicionar livro
+# NOVO ENDPOINT: Adicionar Livro
 @app.route('/api/add_book', methods=['POST'])
 def add_book():
     if not driver:
@@ -341,7 +332,7 @@ def add_book():
     data = request.get_json()
     title = data.get('title')
     author_name = data.get('author')
-    genres_str = data.get('genres', '')  # String separada por vírgulas
+    genres_str = data.get('genres', '') # String separada por vírgulas
     publisher_name = data.get('publisher')
     year = data.get('year')
     pages = data.get('pages')
@@ -350,20 +341,19 @@ def add_book():
     if not all([title, author_name, genres_str]):
         return jsonify({"error": "Título, autor e pelo menos um gênero são obrigatórios."}), 400
 
-    genres = [g.strip() for g in genres_str.split(',') if g.strip()]  # Divide e limpa a string de gêneros
+    genres = [g.strip() for g in genres_str.split(',') if g.strip()] # Divide e limpa a string de gêneros
 
     try:
         with driver.session() as session:
-            # Cria ou encontra o autor
+            # MERGE Author
             session.run("MERGE (a:Autor {nome: $author_name})", {"author_name": author_name})
 
-            # Cria ou encontra a editora (se fornecida)
+            # MERGE Publisher (if provided)
             if publisher_name:
                 session.run("MERGE (p:Editora {nome: $publisher_name})", {"publisher_name": publisher_name})
 
-            # Cria ou encontra o livro com propriedades
-            # ON CREATE SET garante que as propriedades sejam definidas apenas na criação
-            # Se o livro já existir, apenas o encontra
+            # MERGE Book with properties. ON CREATE SET ensures properties are set only on creation.
+            # If the book already exists, it will just match it.
             book_props = {"titulo": title}
             if year:
                 try:
@@ -376,20 +366,19 @@ def add_book():
                 except ValueError:
                     return jsonify({"error": "Páginas deve ser um número válido."}), 400
 
-            # Cria o livro
             session.run("""
                 MERGE (l:Livro {titulo: $title})
                 ON CREATE SET l += $properties
             """, {"title": title, "properties": book_props})
 
-            # Conecta autor ao livro
+            # CORRIGIDO: Autor escreve livro (direção correta)
             session.run("""
                 MATCH (a:Autor {nome: $author_name})
                 MATCH (l:Livro {titulo: $title})
-                MERGE (a)-[:ESCRITO_POR]->(l)
+                MERGE (a)-[:ESCREVEU]->(l)
             """, {"title": title, "author_name": author_name})
 
-            # Conecta gêneros ao livro
+            # Create Genre relationships
             for genre_name in genres:
                 session.run("""
                     MERGE (g:Genero {nome: $genre_name})
@@ -398,7 +387,7 @@ def add_book():
                     MERGE (l)-[:TEM_GENERO]->(g)
                 """, {"genre_name": genre_name, "title": title})
 
-            # Conecta editora ao livro (se fornecida)
+            # Create Publisher relationship
             if publisher_name:
                 session.run("""
                     MATCH (l:Livro {titulo: $title})
@@ -406,7 +395,7 @@ def add_book():
                     MERGE (l)-[:PUBLICADO_POR]->(p)
                 """, {"title": title, "publisher_name": publisher_name})
 
-            return jsonify({"message": f"Livro '{title}' adicionado/atualizado com sucesso!"}), 201
+            return jsonify({"message": f"Livro '{title}' adicionado/atualizado com sucesso!"}), 201 # 201 Created
     except Exception as e:
         print(f"Erro ao adicionar livro: {e}")
         return jsonify({"error": f"Erro interno do servidor ao adicionar livro: {str(e)}"}), 500
