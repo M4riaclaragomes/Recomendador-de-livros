@@ -1,6 +1,3 @@
-// Use esse arquivo para popular o seu bd no neo4j. 
-
-
 // Limpar base de dados existente
 MATCH (n) DETACH DELETE n;
 
@@ -93,34 +90,35 @@ CREATE (l25:Livro {titulo: "Cem Anos de Solidão", ano: 1967, paginas: 432, isbn
 CREATE (l26:Livro {titulo: "Kafka à Beira-Mar", ano: 2002, paginas: 656, isbn: "9788535914924", preco: 44.90, idioma: "Português"})
 CREATE (l27:Livro {titulo: "Garota Exemplar", ano: 2012, paginas: 432, isbn: "9788575421017", preco: 36.90, idioma: "Português"})
 
-// ===== RELACIONAMENTOS AUTOR-LIVRO =====
-CREATE (l1)-[:ESCRITO_POR]->(a1)
-CREATE (l2)-[:ESCRITO_POR]->(a1)
-CREATE (l3)-[:ESCRITO_POR]->(a1)
-CREATE (l4)-[:ESCRITO_POR]->(a1)
-CREATE (l5)-[:ESCRITO_POR]->(a2)
-CREATE (l6)-[:ESCRITO_POR]->(a2)
-CREATE (l7)-[:ESCRITO_POR]->(a3)
-CREATE (l8)-[:ESCRITO_POR]->(a3)
-CREATE (l9)-[:ESCRITO_POR]->(a3)
-CREATE (l10)-[:ESCRITO_POR]->(a3)
-CREATE (l11)-[:ESCRITO_POR]->(a4)
-CREATE (l12)-[:ESCRITO_POR]->(a4)
-CREATE (l13)-[:ESCRITO_POR]->(a4)
-CREATE (l14)-[:ESCRITO_POR]->(a5)
-CREATE (l15)-[:ESCRITO_POR]->(a5)
-CREATE (l16)-[:ESCRITO_POR]->(a5)
-CREATE (l17)-[:ESCRITO_POR]->(a6)
-CREATE (l18)-[:ESCRITO_POR]->(a6)
-CREATE (l19)-[:ESCRITO_POR]->(a7)
-CREATE (l20)-[:ESCRITO_POR]->(a8)
-CREATE (l21)-[:ESCRITO_POR]->(a9)
-CREATE (l22)-[:ESCRITO_POR]->(a10)
-CREATE (l23)-[:ESCRITO_POR]->(a11)
-CREATE (l24)-[:ESCRITO_POR]->(a12)
-CREATE (l25)-[:ESCRITO_POR]->(a13)
-CREATE (l26)-[:ESCRITO_POR]->(a14)
-CREATE (l27)-[:ESCRITO_POR]->(a15)
+// ===== RELACIONAMENTOS AUTOR-LIVRO (CORRIGIDO) =====
+// Agora usando ESCREVEU (autor -> livro) em vez de ESCRITO_POR (livro -> autor)
+CREATE (a1)-[:ESCREVEU]->(l1)
+CREATE (a1)-[:ESCREVEU]->(l2)
+CREATE (a1)-[:ESCREVEU]->(l3)
+CREATE (a1)-[:ESCREVEU]->(l4)
+CREATE (a2)-[:ESCREVEU]->(l5)
+CREATE (a2)-[:ESCREVEU]->(l6)
+CREATE (a3)-[:ESCREVEU]->(l7)
+CREATE (a3)-[:ESCREVEU]->(l8)
+CREATE (a3)-[:ESCREVEU]->(l9)
+CREATE (a3)-[:ESCREVEU]->(l10)
+CREATE (a4)-[:ESCREVEU]->(l11)
+CREATE (a4)-[:ESCREVEU]->(l12)
+CREATE (a4)-[:ESCREVEU]->(l13)
+CREATE (a5)-[:ESCREVEU]->(l14)
+CREATE (a5)-[:ESCREVEU]->(l15)
+CREATE (a5)-[:ESCREVEU]->(l16)
+CREATE (a6)-[:ESCREVEU]->(l17)
+CREATE (a6)-[:ESCREVEU]->(l18)
+CREATE (a7)-[:ESCREVEU]->(l19)
+CREATE (a8)-[:ESCREVEU]->(l20)
+CREATE (a9)-[:ESCREVEU]->(l21)
+CREATE (a10)-[:ESCREVEU]->(l22)
+CREATE (a11)-[:ESCREVEU]->(l23)
+CREATE (a12)-[:ESCREVEU]->(l24)
+CREATE (a13)-[:ESCREVEU]->(l25)
+CREATE (a14)-[:ESCREVEU]->(l26)
+CREATE (a15)-[:ESCREVEU]->(l27)
 
 // ===== RELACIONAMENTOS LIVRO-GÊNERO =====
 CREATE (l1)-[:TEM_GENERO]->(g1)
@@ -268,7 +266,10 @@ CREATE (a8)-[:GANHOU_PREMIO]->(p3)
 
 // ===== CONSULTAS ÚTEIS COMO COMENTÁRIOS =====
 // Para buscar todos os livros de um autor:
-// MATCH (a:Autor {nome: "J.K. Rowling"})<-[:ESCRITO_POR]-(l:Livro) RETURN l.titulo, l.ano
+// MATCH (a:Autor {nome: "J.K. Rowling"})-[:ESCREVEU]->(l:Livro) RETURN l.titulo, l.ano
+
+// Para buscar o autor de um livro:
+// MATCH (l:Livro {titulo: "Harry Potter e a Pedra Filosofal"})<-[:ESCREVEU]-(a:Autor) RETURN a.nome
 
 // Para buscar livros por gênero:
 // MATCH (g:Genero {nome: "Fantasia"})<-[:TEM_GENERO]-(l:Livro) RETURN l.titulo, l.ano
@@ -284,3 +285,6 @@ CREATE (a8)-[:GANHOU_PREMIO]->(p3)
 
 // Para buscar recomendações de livros:
 // MATCH (l1:Livro {titulo: "Harry Potter e a Pedra Filosofal"})-[:RECOMENDA]->(l2:Livro) RETURN l2.titulo
+
+// Para buscar livros de autores de uma nacionalidade específica:
+// MATCH (a:Autor {nacionalidade: "Britânica"})-[:ESCREVEU]->(l:Livro) RETURN a.nome, l.titulo
